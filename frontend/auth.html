@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialHub Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>SocialHub</h1>
+    <nav>
+        <a href="index.html">Home</a>
+    </nav>
+</header>
+
+<main>
+
+    <section>
+        <h2>Create Account</h2>
+
+        <input
+                type="text"
+                id="registerName"
+                placeholder="Enter your name"
+        >
+
+        <input
+                type="email"
+                id="registerEmail"
+                placeholder="Enter your email"
+        >
+
+        <input
+                type="password"
+                id="registerPassword"
+                placeholder="Enter your password"
+        >
+
+        <button onclick="register()">Register</button>
+
+        <p id="registerMessage"></p>
+    </section>
+
+    <section>
+        <h2>Login</h2>
+
+        <input
+                type="email"
+                id="loginEmail"
+                placeholder="Enter your email"
+        >
+
+        <input
+                type="password"
+                id="loginPassword"
+                placeholder="Enter your password"
+        >
+
+        <button onclick="login()">Login</button>
+
+        <p id="loginMessage"></p>
+    </section>
+
+</main>
+
+<script>
+    function register() {
+        const name = document.getElementById("registerName").value;
+        const email = document.getElementById("registerEmail").value;
+        const password = document.getElementById("registerPassword").value;
+
+        fetch("http://localhost:5000/api/auth/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                password: password
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("registerMessage").textContent =
+                    data.message;
+            });
+    }
+
+    function login() {
+        const email = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
+
+        fetch("http://localhost:5000/api/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("loginMessage").textContent =
+                    data.message;
+            });
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialHub Profile</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>SocialHub</h1>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="profile.html">Profile</a>
+        <a href="auth.html">Login</a>
+    </nav>
+</header>
+
+<main>
+
+    <section>
+        <h2>Create Profile</h2>
+
+        <input type="text" id="profileName" placeholder="Your name">
+
+        <textarea
+                id="profileBio"
+                placeholder="Write something about yourself">
+        </textarea>
+
+        <input
+                type="text"
+                id="profileImage"
+                placeholder="Profile image URL (optional)"
+        >
+
+        <button onclick="createProfile()">Save Profile</button>
+
+        <p id="profileMessage"></p>
+    </section>
+
+    <section>
+        <h2>Profiles</h2>
+        <div id="profiles"></div>
+    </section>
+
+</main>
+
+<script>
+    function createProfile() {
+
+        const name = document.getElementById("profileName").value;
+        const bio = document.getElementById("profileBio").value;
+        const profileImage = document.getElementById("profileImage").value;
+
+        if (!name || !bio) {
+            alert("Please enter your name and bio!");
+            return;
+        }
+
+        fetch("http://localhost:5000/api/profiles", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: name,
+                bio: bio,
+                profileImage: profileImage
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+
+                document.getElementById("profileMessage").textContent =
+                    data.message;
+
+                loadProfiles();
+
+                document.getElementById("profileName").value = "";
+                document.getElementById("profileBio").value = "";
+                document.getElementById("profileImage").value = "";
+            })
+            .catch(error => {
+                console.log("Profile error:", error);
+            });
+    }
+
+    function loadProfiles() {
+
+        fetch("http://localhost:5000/api/profiles")
+            .then(response => response.json())
+            .then(profiles => {
+
+                const container = document.getElementById("profiles");
+
+                container.innerHTML = "";
+
+                profiles.forEach(profile => {
+
+                    container.innerHTML += `
+                    <div class="post">
+
+                        ${
+                        profile.profileImage
+                            ? `<img src="${profile.profileImage}" alt="Profile">`
+                            : ""
+                    }
+
+                        <h3>${profile.name}</h3>
+                        <p>${profile.bio}</p>
+
+                    </div>
+                `;
+                });
+            });
+    }
+
+    loadProfiles();
+</script>
+
+</body>
+</html>
