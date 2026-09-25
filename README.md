@@ -39,5 +39,4 @@ share content, and interact with other users.
 5. Open the application in your browser
 
 ## Author
-
-Pavitha
+Pavitha Rajendiran
